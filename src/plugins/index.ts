@@ -9,6 +9,7 @@ import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
+import { gcsStorage } from '@payloadcms/storage-gcs'
 
 import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -87,6 +88,16 @@ export const plugins: Plugin[] = [
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
       },
+    },
+  }),
+  gcsStorage({
+    collections: {
+      media: true,
+    },
+    bucket: process.env.GCS_BUCKET!,
+    options: {
+      projectId: process.env.GCS_PROJECT_ID,
+      credentials: JSON.parse(process.env.GCS_CREDENTIALS!),
     },
   }),
 ]
